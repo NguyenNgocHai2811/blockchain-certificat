@@ -197,62 +197,71 @@ export const fetchTransactionHistory = async (): Promise<TransactionHistory[]> =
   const c = await getContract();
   const history: TransactionHistory[] = [];
   
-  // Lấy events CertificateIssued (mint)
-  const mintFilter = c.filters.CertificateIssued();
-  const mintEvents = await c.queryFilter(mintFilter);
-  
-  for (const event of mintEvents) {
-    if ('args' in event) {
-      const block = await event.getBlock();
-      history.push({
-        type: 'mint',
-        tokenId: Number(event.args[0]),
-        from: ethers.ZeroAddress,
-        to: event.args[1],
-        timestamp: block.timestamp,
-        txHash: event.transactionHash,
-        studentName: event.args[2],
-        courseName: event.args[3]
-      });
+  try {
+    // Lấy events CertificateIssued (mint) - query từ block 0
+    const mintFilter = c.filters.CertificateIssued();
+    const mintEvents = await c.queryFilter(mintFilter, 0, 'latest');
+    
+    for (const event of mintEvents) {
+      if ('args' in event) {
+        const block = await event.getBlock();
+        history.push({
+          type: 'mint',
+          tokenId: Number(event.args[0]),
+          from: ethers.ZeroAddress,
+          to: event.args[1],
+          timestamp: block?.timestamp || Math.floor(Date.now() / 1000),
+          txHash: event.transactionHash,
+          studentName: '',
+          courseName: event.args[2]
+        });
+      }
     }
-  }
-  
-  // Lấy events Transfer (bao gồm cả burn khi to = 0x0)
-  const transferFilter = c.filters.Transfer();
-  const transferEvents = await c.queryFilter(transferFilter);
-  
-  for (const event of transferEvents) {
-    if ('args' in event) {
-      const from = event.args[0];
-      const to = event.args[1];
-      const tokenId = Number(event.args[2]);
-      const block = await event.getBlock();
-      
-      // Bỏ qua mint events (from = 0x0) vì đã xử lý ở trên
-      if (from === ethers.ZeroAddress) continue;
-      
-      if (to === ethers.ZeroAddress) {
-        // Burn event
+    
+    // Lấy events CertificateRevoked (burn)
+    const revokeFilter = c.filters.CertificateRevoked();
+    const revokeEvents = await c.queryFilter(revokeFilter, 0, 'latest');
+    
+    for (const event of revokeEvents) {
+      if ('args' in event) {
+        const block = await event.getBlock();
         history.push({
           type: 'burn',
-          tokenId,
-          from,
-          to,
-          timestamp: block.timestamp,
+          tokenId: Number(event.args[0]),
+          from: '',
+          to: ethers.ZeroAddress,
+          timestamp: block?.timestamp || Math.floor(Date.now() / 1000),
           txHash: event.transactionHash
         });
-      } else {
-        // Transfer event
+      }
+    }
+    
+    // Lấy events Transfer (bao gồm cả chuyển nhượng)
+    const transferFilter = c.filters.Transfer();
+    const transferEvents = await c.queryFilter(transferFilter, 0, 'latest');
+    
+    for (const event of transferEvents) {
+      if ('args' in event) {
+        const from = event.args[0];
+        const to = event.args[1];
+        const tokenId = Number(event.args[2]);
+        
+        // Bỏ qua mint (from = 0x0) và burn (to = 0x0) vì đã xử lý ở trên
+        if (from === ethers.ZeroAddress || to === ethers.ZeroAddress) continue;
+        
+        const block = await event.getBlock();
         history.push({
           type: 'transfer',
           tokenId,
           from,
           to,
-          timestamp: block.timestamp,
+          timestamp: block?.timestamp || Math.floor(Date.now() / 1000),
           txHash: event.transactionHash
         });
       }
     }
+  } catch (error) {
+    console.error('Error fetching transaction history:', error);
   }
   
   // Sắp xếp theo thời gian mới nhất
@@ -264,43 +273,47 @@ export const fetchUserNotifications = async (userAddress: string): Promise<Notif
   const c = await getContract();
   const notifications: Notification[] = [];
   
-  // Lấy events CertificateIssued cho user này
-  const mintFilter = c.filters.CertificateIssued(null, userAddress);
-  const mintEvents = await c.queryFilter(mintFilter);
-  
-  for (const event of mintEvents) {
-    if ('args' in event) {
-      const block = await event.getBlock();
-      notifications.push({
-        id: event.transactionHash,
-        type: 'new_certificate',
-        message: `Bạn đã nhận được chứng chỉ mới: ${event.args[3]} (ID: #${event.args[0]})`,
-        tokenId: Number(event.args[0]),
-        timestamp: block.timestamp,
-        read: false
-      });
+  try {
+    // Lấy events CertificateIssued cho user này - query từ block 0
+    const mintFilter = c.filters.CertificateIssued(null, userAddress);
+    const mintEvents = await c.queryFilter(mintFilter, 0, 'latest');
+    
+    for (const event of mintEvents) {
+      if ('args' in event) {
+        const block = await event.getBlock();
+        notifications.push({
+          id: event.transactionHash,
+          type: 'new_certificate',
+          message: `Bạn đã nhận được chứng chỉ mới: ${event.args[2]} (ID: #${event.args[0]})`,
+          tokenId: Number(event.args[0]),
+          timestamp: block?.timestamp || Math.floor(Date.now() / 1000),
+          read: false
+        });
+      }
     }
-  }
-  
-  // Lấy Transfer events đến user
-  const transferFilter = c.filters.Transfer(null, userAddress);
-  const transferEvents = await c.queryFilter(transferFilter);
-  
-  for (const event of transferEvents) {
-    if ('args' in event) {
-      const from = event.args[0];
-      if (from === ethers.ZeroAddress) continue; // Bỏ qua mint
-      
-      const block = await event.getBlock();
-      notifications.push({
-        id: event.transactionHash,
-        type: 'transfer',
-        message: `Bạn đã nhận chuyển nhượng chứng chỉ #${event.args[2]}`,
-        tokenId: Number(event.args[2]),
-        timestamp: block.timestamp,
-        read: false
-      });
+    
+    // Lấy Transfer events đến user
+    const transferFilter = c.filters.Transfer(null, userAddress);
+    const transferEvents = await c.queryFilter(transferFilter, 0, 'latest');
+    
+    for (const event of transferEvents) {
+      if ('args' in event) {
+        const from = event.args[0];
+        if (from === ethers.ZeroAddress) continue; // Bỏ qua mint
+        
+        const block = await event.getBlock();
+        notifications.push({
+          id: event.transactionHash,
+          type: 'transfer',
+          message: `Bạn đã nhận chuyển nhượng chứng chỉ #${event.args[2]}`,
+          tokenId: Number(event.args[2]),
+          timestamp: block?.timestamp || Math.floor(Date.now() / 1000),
+          read: false
+        });
+      }
     }
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
   }
   
   return notifications.sort((a, b) => b.timestamp - a.timestamp);

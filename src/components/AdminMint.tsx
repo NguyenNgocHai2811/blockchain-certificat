@@ -52,7 +52,7 @@ const AdminMint: React.FC = () => {
 
     // Sub header
     ctx.font = 'bold 18px Arial';
-    ctx.fillText('QNU BLOCKCHAIN CERTIFICATE', width / 2, 135);
+    ctx.fillText('TRƯỜNG ĐẠI HỌC QUY NHƠN', width / 2, 135);
 
     // Chứng nhận
     ctx.fillStyle = '#374151';

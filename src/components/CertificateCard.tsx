@@ -31,7 +31,7 @@ const CertificateCard: React.FC<CertificateCardProps> = ({ cert, size = 'medium'
                 {/* Header */}
                 <div className="text-blue-800">
                     <h3 className={`font-bold ${fonts.title}`}>CHỨNG CHỈ</h3>
-                    <p className={`${fonts.info} text-blue-600`}>QNU BLOCKCHAIN CERTIFICATE</p>
+                    <p className={`${fonts.info} text-blue-600`}>TRƯỜNG ĐẠI HỌC QUY NHƠN</p>
                 </div>
 
                 {/* Divider */}

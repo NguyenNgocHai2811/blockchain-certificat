@@ -77,7 +77,7 @@ const UserPortfolio: React.FC<UserPortfolioProps> = ({ account }) => {
 
         ctx.fillStyle = '#1e40af';
         ctx.font = '20px Arial';
-        ctx.fillText('QNU BLOCKCHAIN CERTIFICATE', canvas.width / 2, 135);
+        ctx.fillText('TRƯỜNG ĐẠI HỌC QUY NHƠN', canvas.width / 2, 135);
 
         // Certificate content
         ctx.fillStyle = '#374151';
