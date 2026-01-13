@@ -47,7 +47,7 @@ const App: React.FC = () => {
             <div className="bg-white p-1 rounded-full mr-2">
                 <svg className="w-6 h-6 text-blue-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
             </div>
-            <span className="font-bold text-xl tracking-tight">Chứng Chỉ VNU</span>
+            <span className="font-bold text-xl tracking-tight">Chứng Chỉ QNU</span>
           </div>
           
           <div className="flex items-center space-x-4">
@@ -112,7 +112,7 @@ const App: React.FC = () => {
                 <div className="mb-8 p-6 bg-blue-50 rounded-full">
                     <svg className="w-20 h-20 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
-                <h1 className="text-4xl font-extrabold text-gray-900 mb-4">Chứng Chỉ Blockchain VNU</h1>
+                <h1 className="text-4xl font-extrabold text-gray-900 mb-4">Chứng Chỉ Blockchain QNU</h1>
                 <p className="text-xl text-gray-600 max-w-2xl mb-8">
                     Bằng cấp học thuật an toàn, minh bạch và có thể xác thực trên nền tảng Ethereum.
                     Sinh viên có thể nhận bằng và nhà tuyển dụng có thể xác minh ngay lập tức.
@@ -151,7 +151,7 @@ const App: React.FC = () => {
       </main>
       <footer className="bg-white border-t mt-auto py-8">
           <div className="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
-              &copy; {new Date().getFullYear()} Ứng dụng Chứng chỉ VNU. Triển khai trên Ethereum.
+              &copy; {new Date().getFullYear()} Ứng dụng Chứng chỉ QNU. Triển khai trên Ethereum.
           </div>
       </footer>
       

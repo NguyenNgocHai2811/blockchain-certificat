@@ -1,4 +1,4 @@
-# 🎓 VNU Blockchain Certificate
+# 🎓 QNU Blockchain Certificate
 
 Hệ thống quản lý và xác thực chứng chỉ học thuật trên nền tảng Blockchain Ethereum.
 
@@ -116,4 +116,4 @@ MIT License - Xem file [LICENSE](LICENSE) để biết thêm chi tiết.
 
 ---
 
-Phát triển bởi **VNU** | Triển khai trên **Ethereum Sepolia Testnet**
+Phát triển bởi **QNU** | Triển khai trên **Ethereum Sepolia Testnet**

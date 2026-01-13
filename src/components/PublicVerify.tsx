@@ -29,7 +29,7 @@ const PublicVerify: React.FC = () => {
             <div className="text-center mb-10">
                 <h1 className="text-3xl font-bold text-gray-800 mb-4">Xác thực chứng chỉ</h1>
                 <p className="text-gray-600">
-                    Xác minh tính xác thực của chứng chỉ VNU được cấp trên blockchain Ethereum.
+                    Xác minh tính xác thực của chứng chỉ QNU được cấp trên blockchain Ethereum.
                 </p>
             </div>
 
@@ -60,7 +60,7 @@ const PublicVerify: React.FC = () => {
                         </div>
                         <div>
                             <h3 className="text-xl font-bold text-green-800">Chứng chỉ hợp lệ</h3>
-                            <p className="text-green-600 text-sm">Được cấp bởi Ban quản trị VNU</p>
+                            <p className="text-green-600 text-sm">Được cấp bởi Ban quản trị QNU</p>
                         </div>
                     </div>
                     
