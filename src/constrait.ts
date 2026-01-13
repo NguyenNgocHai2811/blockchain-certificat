@@ -1,7 +1,20 @@
 // REPLACE THIS WITH YOUR DEPLOYED CONTRACT ADDRESS
-export const CONTRACT_ADDRESS = "0x7BB39C18e78919847900456556a084a8AC36d590"; 
+export const CONTRACT_ADDRESS = "0xe0C95448d3204DC71FbF46357b3910083e0165f5"; 
 
-export const CONTRACT_ABI = [
+export const CONTRACT_ABI =[
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "_burnCertificate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
@@ -58,6 +71,24 @@ export const CONTRACT_ABI = [
 		"type": "event"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -102,6 +133,79 @@ export const CONTRACT_ABI = [
 		"type": "event"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "studentName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "courseName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "grade",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "imageURL",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "issueDate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "signature",
+						"type": "bytes"
+					}
+				],
+				"internalType": "struct Certificate.CertificateInfo",
+				"name": "data",
+				"type": "tuple"
+			}
+		],
+		"name": "safeMint",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "approved",
+				"type": "bool"
+			}
+		],
+		"name": "setApprovalForAll",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -129,18 +233,10 @@ export const CONTRACT_ABI = [
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "_burnCertificate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
 			{
 				"internalType": "address",
 				"name": "to",
@@ -152,7 +248,7 @@ export const CONTRACT_ABI = [
 				"type": "uint256"
 			}
 		],
-		"name": "approve",
+		"name": "transferFrom",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -405,79 +501,6 @@ export const CONTRACT_ABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			},
-			{
-				"components": [
-					{
-						"internalType": "string",
-						"name": "studentName",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "courseName",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "grade",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "imageURL",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "issueDate",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bytes",
-						"name": "signature",
-						"type": "bytes"
-					}
-				],
-				"internalType": "struct Certificate.CertificateInfo",
-				"name": "data",
-				"type": "tuple"
-			}
-		],
-		"name": "safeMint",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "operator",
-				"type": "address"
-			},
-			{
-				"internalType": "bool",
-				"name": "approved",
-				"type": "bool"
-			}
-		],
-		"name": "setApprovalForAll",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "symbol",
 		"outputs": [
@@ -488,29 +511,6 @@ export const CONTRACT_ABI = [
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "transferFrom",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{

@@ -45,11 +45,11 @@ const AdminMint: React.FC = () => {
       console.log("Sending transaction...");
       await mintCertificate(formData.receiver, tokenIdNum, certData);
       
-      alert("Certificate Minted Successfully!");
+      alert("Cấp chứng chỉ thành công!");
       setFormData({...formData, tokenId: (tokenIdNum + 1).toString()});
     } catch (error: any) {
       console.error(error);
-      alert("Mint failed: " + (error.reason || error.message));
+      alert("Cấp chứng chỉ thất bại: " + (error.reason || error.message));
     } finally {
       setLoading(false);
     }
@@ -57,11 +57,11 @@ const AdminMint: React.FC = () => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Issue New Certificate</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">Cấp chứng chỉ mới</h2>
       <form onSubmit={handleMint} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label className="block text-sm font-medium text-gray-700">Student Wallet Address</label>
+                <label className="block text-sm font-medium text-gray-700">Địa chỉ ví sinh viên</label>
                 <input 
                     type="text" 
                     required
@@ -86,7 +86,7 @@ const AdminMint: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label className="block text-sm font-medium text-gray-700">Student Name</label>
+                <label className="block text-sm font-medium text-gray-700">Tên sinh viên</label>
                 <input 
                     type="text" 
                     required
@@ -96,7 +96,7 @@ const AdminMint: React.FC = () => {
                 />
             </div>
             <div>
-                <label className="block text-sm font-medium text-gray-700">Course Name</label>
+                <label className="block text-sm font-medium text-gray-700">Tên khóa học</label>
                 <input 
                     type="text" 
                     required
@@ -108,22 +108,22 @@ const AdminMint: React.FC = () => {
         </div>
 
         <div>
-            <label className="block text-sm font-medium text-gray-700">Grade / Classification</label>
+            <label className="block text-sm font-medium text-gray-700">Xếp loại</label>
             <select 
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
                 value={formData.grade}
                 onChange={(e) => setFormData({...formData, grade: e.target.value})}
             >
-                <option value="">Select Grade</option>
-                <option value="Excellent">Excellent</option>
-                <option value="Very Good">Very Good</option>
-                <option value="Good">Good</option>
-                <option value="Average">Average</option>
+                <option value="">Chọn xếp loại</option>
+                <option value="Xuất sắc">Xuất sắc</option>
+                <option value="Giỏi">Giỏi</option>
+                <option value="Khá">Khá</option>
+                <option value="Trung bình">Trung bình</option>
             </select>
         </div>
 
         <div>
-            <label className="block text-sm font-medium text-gray-700">Certificate Image URL (IPFS)</label>
+            <label className="block text-sm font-medium text-gray-700">URL hình ảnh chứng chỉ (IPFS)</label>
             <div className="flex gap-2">
                 <input 
                     type="text" 
@@ -132,10 +132,10 @@ const AdminMint: React.FC = () => {
                     readOnly
                 />
                 <button type="button" className="mt-1 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 text-sm">
-                    Upload (Simulated)
+                    Tải lên (Mô phỏng)
                 </button>
             </div>
-            <p className="text-xs text-gray-500 mt-1">Using Picsum placeholder for demo.</p>
+            <p className="text-xs text-gray-500 mt-1">Sử dụng Picsum placeholder cho demo.</p>
         </div>
 
         <button 
@@ -143,7 +143,7 @@ const AdminMint: React.FC = () => {
             disabled={loading}
             className={`w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-bold ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-            {loading ? 'Processing (Sign & Mint)...' : 'Sign & Mint Certificate'}
+            {loading ? 'Đang xử lý (Ký & Cấp)...' : 'Ký & Cấp chứng chỉ'}
         </button>
       </form>
     </div>

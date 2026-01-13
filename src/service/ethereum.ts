@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../constrait';
-import { CertificateStruct, CertificateData } from '../types';
+import { CertificateStruct, CertificateData, TransactionHistory, Notification } from '../types';
 
 let provider: ethers.BrowserProvider | null = null;
 let contract: ethers.Contract | null = null;
@@ -189,4 +189,167 @@ const parseContractData = (data: any[]): CertificateData[] => {
         issueDate: item.issueDate || item[4],
         signature: item.signature || item[5]
     }));
+};
+
+
+// Lấy lịch sử giao dịch từ blockchain events
+export const fetchTransactionHistory = async (): Promise<TransactionHistory[]> => {
+  const c = await getContract();
+  const history: TransactionHistory[] = [];
+  
+  // Lấy events CertificateIssued (mint)
+  const mintFilter = c.filters.CertificateIssued();
+  const mintEvents = await c.queryFilter(mintFilter);
+  
+  for (const event of mintEvents) {
+    if ('args' in event) {
+      const block = await event.getBlock();
+      history.push({
+        type: 'mint',
+        tokenId: Number(event.args[0]),
+        from: ethers.ZeroAddress,
+        to: event.args[1],
+        timestamp: block.timestamp,
+        txHash: event.transactionHash,
+        studentName: event.args[2],
+        courseName: event.args[3]
+      });
+    }
+  }
+  
+  // Lấy events Transfer (bao gồm cả burn khi to = 0x0)
+  const transferFilter = c.filters.Transfer();
+  const transferEvents = await c.queryFilter(transferFilter);
+  
+  for (const event of transferEvents) {
+    if ('args' in event) {
+      const from = event.args[0];
+      const to = event.args[1];
+      const tokenId = Number(event.args[2]);
+      const block = await event.getBlock();
+      
+      // Bỏ qua mint events (from = 0x0) vì đã xử lý ở trên
+      if (from === ethers.ZeroAddress) continue;
+      
+      if (to === ethers.ZeroAddress) {
+        // Burn event
+        history.push({
+          type: 'burn',
+          tokenId,
+          from,
+          to,
+          timestamp: block.timestamp,
+          txHash: event.transactionHash
+        });
+      } else {
+        // Transfer event
+        history.push({
+          type: 'transfer',
+          tokenId,
+          from,
+          to,
+          timestamp: block.timestamp,
+          txHash: event.transactionHash
+        });
+      }
+    }
+  }
+  
+  // Sắp xếp theo thời gian mới nhất
+  return history.sort((a, b) => b.timestamp - a.timestamp);
+};
+
+// Lấy thông báo cho user dựa trên events
+export const fetchUserNotifications = async (userAddress: string): Promise<Notification[]> => {
+  const c = await getContract();
+  const notifications: Notification[] = [];
+  
+  // Lấy events CertificateIssued cho user này
+  const mintFilter = c.filters.CertificateIssued(null, userAddress);
+  const mintEvents = await c.queryFilter(mintFilter);
+  
+  for (const event of mintEvents) {
+    if ('args' in event) {
+      const block = await event.getBlock();
+      notifications.push({
+        id: event.transactionHash,
+        type: 'new_certificate',
+        message: `Bạn đã nhận được chứng chỉ mới: ${event.args[3]} (ID: #${event.args[0]})`,
+        tokenId: Number(event.args[0]),
+        timestamp: block.timestamp,
+        read: false
+      });
+    }
+  }
+  
+  // Lấy Transfer events đến user
+  const transferFilter = c.filters.Transfer(null, userAddress);
+  const transferEvents = await c.queryFilter(transferFilter);
+  
+  for (const event of transferEvents) {
+    if ('args' in event) {
+      const from = event.args[0];
+      if (from === ethers.ZeroAddress) continue; // Bỏ qua mint
+      
+      const block = await event.getBlock();
+      notifications.push({
+        id: event.transactionHash,
+        type: 'transfer',
+        message: `Bạn đã nhận chuyển nhượng chứng chỉ #${event.args[2]}`,
+        tokenId: Number(event.args[2]),
+        timestamp: block.timestamp,
+        read: false
+      });
+    }
+  }
+  
+  return notifications.sort((a, b) => b.timestamp - a.timestamp);
+};
+
+// Batch mint nhiều chứng chỉ
+export const batchMintCertificates = async (
+  items: Array<{
+    receiver: string;
+    tokenId: number;
+    studentName: string;
+    courseName: string;
+    grade: string;
+    imageURL: string;
+  }>,
+  onProgress: (index: number, status: 'processing' | 'success' | 'error', error?: string) => void
+): Promise<void> => {
+  const s = await getSigner();
+  const c = await getContract();
+  
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    onProgress(i, 'processing');
+    
+    try {
+      // Sign data
+      const messageHash = ethers.solidityPackedKeccak256(
+        ["uint256", "string", "string"],
+        [item.tokenId, item.studentName, item.courseName]
+      );
+      const signature = await s.signMessage(ethers.getBytes(messageHash));
+      
+      // Prepare struct
+      const certData: CertificateStruct = {
+        studentName: item.studentName,
+        courseName: item.courseName,
+        grade: item.grade,
+        imageURL: item.imageURL,
+        issueDate: 0n,
+        signature: signature
+      };
+      
+      // Mint
+      const tx = await c.safeMint(item.receiver, item.tokenId, certData);
+      await tx.wait();
+      
+      onProgress(i, 'success');
+    } catch (error: any) {
+      onProgress(i, 'error', error.reason || error.message);
+    }
+  }
 };
