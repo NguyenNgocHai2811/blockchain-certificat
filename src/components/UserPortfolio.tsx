@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { CertificateData, CertificateStruct } from '../types';
 import { fetchAllCertificates, getContract } from '../service/ethereum';
+import CertificateCard from './CertificateCard';
 
 interface UserPortfolioProps {
     account: string;
@@ -166,22 +167,9 @@ const UserPortfolio: React.FC<UserPortfolioProps> = ({ account }) => {
                             <div 
                                 key={cert.tokenId} 
                                 onClick={() => setSelectedCert(cert)}
-                                className="bg-white rounded-lg shadow hover:shadow-xl transition-shadow cursor-pointer overflow-hidden group"
+                                className="cursor-pointer hover:scale-[1.02] transition-transform"
                             >
-                                <div className="h-48 bg-gray-200 overflow-hidden relative">
-                                    <img src={cert.imageURL} alt="Chứng chỉ" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                                    <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">
-                                        #{cert.tokenId}
-                                    </div>
-                                </div>
-                                <div className="p-4">
-                                    <h3 className="font-bold text-lg text-gray-800 truncate">{cert.courseName}</h3>
-                                    <p className="text-sm text-gray-600 mb-2">{cert.studentName}</p>
-                                    <div className="flex justify-between items-center text-xs text-gray-500">
-                                        <span>Ngày cấp: {new Date(Number(cert.issueDate) * 1000).toLocaleDateString('vi-VN')}</span>
-                                        <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded-full">{cert.grade}</span>
-                                    </div>
-                                </div>
+                                <CertificateCard cert={cert} size="medium" />
                             </div>
                         ))
                     )}
@@ -196,12 +184,14 @@ const UserPortfolio: React.FC<UserPortfolioProps> = ({ account }) => {
                         <div className="p-6">
                             <div className="flex justify-between items-start mb-4">
                                 <h3 className="text-2xl font-bold text-gray-900">Chi tiết chứng chỉ</h3>
-                                <button onClick={() => setSelectedCert(null)} className="text-gray-400 hover:text-gray-600">
+                                <button onClick={() => { setSelectedCert(null); setShowShareMenu(false); }} className="text-gray-400 hover:text-gray-600">
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                 </button>
                             </div>
                             
-                            <img src={selectedCert.imageURL} alt="Chứng chỉ" className="w-full h-56 object-cover rounded-md mb-4 border border-gray-200" />
+                            <div className="mb-4">
+                                <CertificateCard cert={selectedCert} size="large" />
+                            </div>
                             
                             <div className="space-y-3">
                                 <div className="flex justify-between border-b pb-2">
