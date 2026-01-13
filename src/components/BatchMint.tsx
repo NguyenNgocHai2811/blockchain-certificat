@@ -28,7 +28,7 @@ const BatchMint: React.FC = () => {
                     studentName: row['Tên sinh viên'] || row['studentName'] || row['name'] || '',
                     courseName: row['Khóa học'] || row['courseName'] || row['course'] || '',
                     grade: row['Xếp loại'] || row['grade'] || '',
-                    imageURL: row['URL hình ảnh'] || row['imageURL'] || row['image'] || 'https://picsum.photos/400/300',
+                    imageURL: '', // Không cần hình ảnh nữa
                     status: 'pending' as const
                 }));
 
@@ -85,16 +85,14 @@ const BatchMint: React.FC = () => {
                 'Token ID': 1,
                 'Tên sinh viên': 'Nguyễn Văn A',
                 'Khóa học': 'Công nghệ thông tin',
-                'Xếp loại': 'Xuất sắc',
-                'URL hình ảnh': 'https://picsum.photos/400/300'
+                'Xếp loại': 'Xuất sắc'
             },
             {
                 'Địa chỉ ví': '0x5678...efgh',
                 'Token ID': 2,
                 'Tên sinh viên': 'Trần Thị B',
                 'Khóa học': 'Kinh tế',
-                'Xếp loại': 'Giỏi',
-                'URL hình ảnh': 'https://picsum.photos/400/300'
+                'Xếp loại': 'Giỏi'
             }
         ];
         
